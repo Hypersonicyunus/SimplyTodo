@@ -26,7 +26,7 @@ class App(customtkinter.CTk): #hehehe i took this from the documentation >:]
 
         # -- Todo frame -- #
 
-        self.todoCheckBoxScrollableFrame = todoCheckBoxScrollableFrame(self, "ToDo")
+        self.todoCheckBoxScrollableFrame = todoCheckBoxScrollableFrame(self, "ToDo", self.Todo)
         self.todoCheckBoxScrollableFrame.grid(row=0, column=0, padx=10, pady=10, sticky="nwes")
         self.todoCheckBoxScrollableFrame.rowconfigure(0, weight=1)
         self.todoCheckBoxScrollableFrame.rowconfigure(1, weight=1)
@@ -58,13 +58,13 @@ class App(customtkinter.CTk): #hehehe i took this from the documentation >:]
             return
         self.Todo.append(enteredText)
         print(self.Todo)
-        self.todoCheckBoxScrollableFrame.update_display(self.Todo[-1], self.Todo)
+        self.todoCheckBoxScrollableFrame.update_display(self.Todo[-1], len(self.Todo)-1, len(self.Todo))
         self.entrybox.delete(0, 'end')
 
 
 
 class todoCheckBoxScrollableFrame(customtkinter.CTkScrollableFrame):
-    def __init__(self, master, todoTitle):
+    def __init__(self, master, todoTitle, toDoList):
         super().__init__(master)
 
         self.todoTitle = todoTitle
@@ -74,9 +74,17 @@ class todoCheckBoxScrollableFrame(customtkinter.CTkScrollableFrame):
         self.title = customtkinter.CTkLabel(self, text=self.todoTitle, fg_color="gray30", corner_radius=6)
         self.title.grid(row=0, column=0, padx=10, pady=(10,0), sticky="we")
 
-    def update_display(self, task, Todo):
-        self.todocheckbox = customtkinter.CTkCheckBox(self, text=task)
-        self.todocheckbox.grid(row=len(Todo), column=0, padx=20, pady=20, sticky="nw")
+    def update_display(self, task, lastTask, TodoList):
+        self.todocheckbox = customtkinter.CTkCheckBox(self, text=task, command=lambda: self.moveToCompleted(TodoList))
+        self.todocheckbox.grid(row=len(task), column=0, padx=20, pady=20, sticky="nw")
+
+    def moveToCompleted(self, Todo):
+        print("moveToCompleted Ran")
+        if self.todocheckbox.get() == (1):
+            self.todoGridInfo = self.todocheckbox.grid_info()
+            print(self.todoGridInfo["row"])
+
+        
 
 
 class completedCheckBoxScrollableFrame(customtkinter.CTkScrollableFrame):
